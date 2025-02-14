@@ -13,6 +13,9 @@ namespace MiCarrito.Entities
         public virtual Clientes? Cliente { get; set; }
         public Guid ArticuloId { get; set; }
         public virtual Articulos? Articulo { get; set; }
+        public int Cantidad { get; set; }
+        public double Total {  get; set; }
+        public Guid IdCompra { get; set; }
         public DateTime Fecha { get; set; }
     }
 }

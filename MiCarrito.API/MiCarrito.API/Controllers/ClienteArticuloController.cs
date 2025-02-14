@@ -8,10 +8,12 @@ namespace MiCarrito.API.Controllers
     public class ClienteArticuloController : ControllerBase
     {
         private readonly IClienteArticulo _clientes;
+        private readonly IArticulos _articulos;
 
-        public ClienteArticuloController(IClienteArticulo clientes)
+        public ClienteArticuloController(IClienteArticulo clientes, IArticulos articulos)
         {
             _clientes = clientes;
+            _articulos = articulos;
         }
 
         [HttpGet]
@@ -38,10 +40,17 @@ namespace MiCarrito.API.Controllers
             {
                 Id = Guid.NewGuid(),
                 ArticuloId = cliente.ArticuloId,
-                ClienteId = cliente.Id,
+                ClienteId = cliente.ClienteId,
+                Cantidad = cliente.Cantidad,
+                Fecha = DateTime.Now,
+                IdCompra = cliente.IdCompra,
+                Total = cliente.Total,
             };
 
             await _clientes.AddAsync(newCliente);
+            var newArticulo = await _articulos.FindAsync(cliente.ArticuloId);
+            newArticulo.Stock = newArticulo.Stock - cliente.Cantidad;
+            await _articulos.UpdateAsync(newArticulo);
             return Ok(newCliente);
         }
 
