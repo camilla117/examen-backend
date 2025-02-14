@@ -1,0 +1,37 @@
+version: '3.9'
+
+networks:
+  app-network-public:
+    driver: bridge
+
+volumes:
+  sql-server-data:
+    driver: local
+  sqldata:
+  sqllog:
+  sqlbackup:
+  
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: MiCarrito-db-sqlserver
+    user: root
+    networks:
+      - app-network-public
+    restart: always
+    environment:
+      - MSSQL_SA_PASSWORD=c!b3r@d3v
+      - ACCEPT_EULA=Y
+      - MSSQL_DATA_DIR=/var/opt/sqlserver/data
+      - MSSQL_LOG_DIR=/var/opt/sqlserver/log
+      - MSSQL_BACKUP_DIR=/var/opt/sqlserver/backup
+        TZ=America/Toronto
+    ports:
+      - '1433:1433'
+      - '1434:1434'
+    volumes:
+      - sql-server-data:/var/opt/mssql/
+      - sqldata:/var/opt/sqlserver/data
+      - sqllog:/var/opt/sqlserver/log
+      - sqlbackup:/var/opt/sqlserver/backup
+      - /c/docker/shared:/usr/shared
